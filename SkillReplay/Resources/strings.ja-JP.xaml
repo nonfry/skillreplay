@@ -1,0 +1,24 @@
+﻿<ResourceDictionary 
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="AutoReplay_AnySkill">何かしらのスキル使用時</system:String>
+    <system:String x:Key="AutoReplay_None">なし</system:String>
+    <system:String x:Key="AutoReplay_SameSkill">リプレイと同じスキル使用時</system:String>
+    <system:String x:Key="Button_LoadFight">戦闘データ読込</system:String>
+    <system:String x:Key="Button_LoadSkill">スキル読込</system:String>
+    <system:String x:Key="Button_Play">再生</system:String>
+    <system:String x:Key="Button_Stop">停止</system:String>
+    <system:String x:Key="Label_AutoReplay">自動リプレイ</system:String>
+    <system:String x:Key="Label_Fight">戦闘</system:String>
+    <system:String x:Key="Label_Job">ジョブ</system:String>
+    <system:String x:Key="Label_Language">言語</system:String>
+    <system:String x:Key="Label_Port">ポート</system:String>
+    <system:String x:Key="Label_AutoStop">自動停止</system:String>
+    <system:String x:Key="AutoStop_None">なし</system:String>
+    <system:String x:Key="AutoStop_AutoReplay">オート実行時</system:String>
+    <system:String x:Key="AutoStop_Text">停止するまでの秒数</system:String>
+    <system:String x:Key="Language_English">English</system:String>
+    <system:String x:Key="Language_Japanese">日本語</system:String>
+    <system:String x:Key="FFLogsURL">https://ja.fflogs.com/reports/</system:String>
+</ResourceDictionary>

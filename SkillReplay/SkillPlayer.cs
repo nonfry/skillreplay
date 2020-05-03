@@ -12,7 +12,7 @@ namespace SkillReplay
 {
 	class WebSocketServer
 	{
-		private List<WebSocket> sockets=new List<WebSocket>();
+		private List<WebSocket> sockets = new List<WebSocket>();
 		private Logger log;
 		private ArraySegment<byte> sendCharName;
 		private ArraySegment<byte> addCombatant;
@@ -27,12 +27,12 @@ namespace SkillReplay
 			s.Prefixes.Add("http://127.0.0.1:10601/BeforeLogLineRead/");
 			s.Start();
 			log.Log("start websocket server");
-			while (true)
+			while( true )
 			{
 				var hc = await s.GetContextAsync();
 				log.Log("overlay connect");
 
-				if (!hc.Request.IsWebSocketRequest)
+				if( !hc.Request.IsWebSocketRequest )
 				{
 					hc.Response.StatusCode = 400;
 					hc.Response.Close();
@@ -49,26 +49,26 @@ namespace SkillReplay
 
 		public void Disconnect()
 		{
-			foreach (var ws in sockets)
+			foreach( var ws in sockets )
 			{
-				ws.CloseAsync(WebSocketCloseStatus.NormalClosure,"Done", CancellationToken.None);
+				ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Done", CancellationToken.None);
 			}
 			sockets.Clear();
 		}
 
 		private async Task InitSend(WebSocket ws)
 		{
-			if (sendCharName.Count==0)
+			if( sendCharName.Count == 0 )
 			{
 				string json = $@"{{ ""type"": ""broadcast"", ""msgtype"": ""SendCharName"", ""msg"": {{ ""charName"": ""Skill Replay"", ""charID"": 305419896}} }}";
 				var buffer = Encoding.UTF8.GetBytes(json);
 				sendCharName = new ArraySegment<byte>(buffer);
 			}
-			if (sendCharName.Count!=0)
+			if( sendCharName.Count != 0 )
 			{
 				await ws.SendAsync(sendCharName, WebSocketMessageType.Text, true, CancellationToken.None);
 			}
-			if (addCombatant.Count!=0)
+			if( addCombatant.Count != 0 )
 			{
 				await ws.SendAsync(addCombatant, WebSocketMessageType.Text, true, CancellationToken.None);
 			}
@@ -83,7 +83,7 @@ namespace SkillReplay
 			var buffer1 = Encoding.UTF8.GetBytes(json1);
 			addCombatant = new ArraySegment<byte>(buffer1);
 
-			foreach (var ws in sockets)
+			foreach( var ws in sockets )
 			{
 				ws.SendAsync(addCombatant, WebSocketMessageType.Text, true, CancellationToken.None);
 			}
@@ -103,12 +103,12 @@ namespace SkillReplay
 			var buffer2 = Encoding.UTF8.GetBytes(json2);
 			var segment2 = new ArraySegment<byte>(buffer2);
 
-			foreach(var ws in sockets)
+			foreach( var ws in sockets )
 			{
 				ws.SendAsync(segment1, WebSocketMessageType.Text, true, CancellationToken.None);
 				ws.SendAsync(segment2, WebSocketMessageType.Text, true, CancellationToken.None);
 			}
-			sockets.RemoveAll( ws => ws.State==WebSocketState.Closed);
+			sockets.RemoveAll(ws => ws.State == WebSocketState.Closed);
 		}
 
 	}
@@ -138,8 +138,8 @@ namespace SkillReplay
 		{
 			log.Log("start replay");
 
-			var events= se.events;
-			if (events.Count == 0) return;
+			var events = se.events;
+			if( events.Count == 0 ) return;
 
 			Stop();
 			var ct = tokenSource.Token;
@@ -150,21 +150,21 @@ namespace SkillReplay
 
 			var first = events.First();
 			var start = DateTime.Now;
-			foreach (var ev in events)
+			foreach( var ev in events )
 			{
-				if (ct.IsCancellationRequested || ev == null)
+				if( ct.IsCancellationRequested || ev == null )
 				{
 					log.Log("stop replay");
 					IsReplay = false;
 					break;
 				}
-				if(ev.sourceID!= friend.id) continue;
+				if( ev.sourceID != friend.id ) continue;
 
-				if (ev != first)
+				if( ev != first )
 				{
 					var dt = ev.timestamp - first.timestamp;
 					var delay = start + TimeSpan.FromMilliseconds(dt) - DateTime.Now;
-					if (delay > TimeSpan.Zero)
+					if( delay > TimeSpan.Zero )
 					{
 						await Task.Delay(delay);
 					}

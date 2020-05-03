@@ -3,65 +3,89 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SkillReplay"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="800">
     <UserControl.Resources>
-        <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
-        </Style>
-        <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}">
-            <Setter Property="Padding" Value="0,0,0,0"/>
-        </Style>
-        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}">
-        </Style>
-        <Style TargetType="{x:Type ComboBox}"  BasedOn="{StaticResource BaseStyle}">
-        </Style>
-        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}">
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Strings.ja-JP.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="PlayStopButton" TargetType="Button">
+                <Style.Triggers>
+                    <Trigger Property="Tag" Value="Play">
+                        <Setter Property="Content" Value="{DynamicResource Button_Play}"></Setter>
+                    </Trigger>
+                    <Trigger Property="Tag" Value="Stop">
+                        <Setter Property="Content" Value="{DynamicResource Button_Stop}"></Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid RenderTransformOrigin="0.5,0.5" Margin="10,10,10,10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="FFLogsURL" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-        <TextBox  Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1" Text="{Binding TextFFLogsURL.Value}"/>
-        <Button  Grid.Row="1" Grid.Column="1" Content="データ読込" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" HorizontalContentAlignment="Center" Command="{Binding CommandLoadFights}"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="戦闘" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" />
-        <ComboBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="370" ItemsSource="{Binding FightList.Value}" SelectedItem="{Binding CurrentFight.Value}"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="{DynamicResource Label_Language}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="370" SelectedValue="{Binding Language.Value}" ItemsSource="{Binding LanguageList}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectionChanged="ComboBox_SelectionChanged"/>
 
-        <Label Grid.Row="3" Grid.Column="0" Content="ジョブ" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" />
-        <ComboBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="370" ItemsSource="{Binding FriendlyList.Value}" SelectedItem="{Binding CurrentFriendly.Value}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="FFLogsURL" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" VerticalContentAlignment="Center" />
+        <TextBox  Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Center" MaxLines="1" Text="{Binding TextFFLogsURL.Value}"/>
 
-        <Button Grid.Row="4" Grid.Column="1" Content="スキル読込" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Command="{Binding CommandLoadSkill}"/>
-        <Button Grid.Row="5" Grid.Column="1" Content="{Binding TextPlayButton.Value}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" MinHeight="20" Command="{Binding CommandReplay}"/>
+        <Button  Grid.Row="2" Grid.Column="1" Content="{DynamicResource Button_LoadFight}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150"  MinHeight="10" HorizontalContentAlignment="Center" Command="{Binding CommandLoadFights}"/>
 
-        <Label Grid.Row="6" Grid.Column="0" Content="ポート" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" />
-        <TextBox  Grid.Row="6" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1" Width="100" Text="{Binding NumberPort.Value}" HorizontalAlignment="Left"/>
+        <Label Grid.Row="3" Grid.Column="0" Content="{DynamicResource Label_Fight}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <ComboBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="370" ItemsSource="{Binding FightList.Value}" SelectedItem="{Binding CurrentFight.Value}"/>
 
-        <Label Grid.Row="7" Grid.Column="0" Content="OverlayURL" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" />
-        <TextBox  Grid.Row="7" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Top" VerticalContentAlignment="Center" MaxLines="1" Text="{Binding OverlayURL.Value}" IsReadOnly="True"/>
+        <Label Grid.Row="4" Grid.Column="0" Content="{DynamicResource Label_Job}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <ComboBox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="370" ItemsSource="{Binding FriendlyList.Value}" SelectedItem="{Binding CurrentFriendly.Value}"/>
 
-        <Label Grid.Row="8" Grid.Column="0" Content="自動リプレイ" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" />
-        <ComboBox Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedIndex="{Binding AutoReplay.Value}" >
-            <ComboBoxItem Content="なし" />
-            <ComboBoxItem Content="何かしらのスキル使用時" />
-            <ComboBoxItem Content="リプレイと同じスキル使用時" />
+        <Button Grid.Row="5" Grid.Column="1" Content="{DynamicResource Button_LoadSkill}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" Command="{Binding CommandLoadSkill}"/>
+
+        <Button Grid.Row="6" Grid.Column="1" Tag="{Binding PlayStopTagList.Value}" Style="{DynamicResource PlayStopButton}"  HorizontalAlignment="Left" VerticalAlignment="Center" Width="150" MinHeight="10" Command="{Binding CommandReplay}">
+            <!-- Content="{Binding TextPlayButton.Value}" -->
+        </Button>
+
+        <Label Grid.Row="7" Grid.Column="0" Content="{DynamicResource Label_Port}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <TextBox  Grid.Row="7" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Center" MaxLines="1" Width="100" Text="{Binding NumberPort.Value}" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="8" Grid.Column="0" Content="OverlayURL" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <TextBox  Grid.Row="8" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Center" MaxLines="1" Text="{Binding OverlayURL.Value}" IsReadOnly="True"/>
+
+        <Label Grid.Row="9" Grid.Column="0" Content="{DynamicResource Label_AutoReplay}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <ComboBox Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" SelectedIndex="{Binding AutoReplay.Value}" Margin="0,4" Width="150" >
+            <ComboBoxItem Content="{DynamicResource AutoReplay_None}" />
+            <ComboBoxItem Content="{DynamicResource AutoReplay_AnySkill}" />
+            <ComboBoxItem Content="{DynamicResource AutoReplay_SameSkill}" />
         </ComboBox>
 
-        <TextBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" Background="White" IsReadOnly="True" Text="{Binding TextDebug.Value}" />
+        <Label Grid.Row="10" Grid.Column="0" Content="{DynamicResource Label_AutoStop}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" />
+        <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="1" >
+            <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" SelectedIndex="{Binding AutoStop.Value}" Margin="0,4" Width="150" >
+                <ComboBoxItem Content="{DynamicResource AutoStop_None}" />
+                <ComboBoxItem Content="{DynamicResource AutoStop_AutoReplay}" />
+            </ComboBox>
+            <Label Content="{DynamicResource AutoStop_Text}" HorizontalAlignment="Left" Width="120" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+            <TextBox TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Center" MaxLines="1" Width="70" Text="{Binding AutoStopTime.Value}" HorizontalAlignment="Left"/>
+        </StackPanel>
+
+
+        <TextBox Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" Background="White" IsReadOnly="True" Text="{Binding TextDebug.Value}" />
     </Grid>
 </UserControl>

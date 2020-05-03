@@ -2,7 +2,10 @@
 using Advanced_Combat_Tracker;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Xml;
@@ -13,15 +16,13 @@ namespace SkillReplay
 
 	public partial class SkillReplayMain : IActPluginV1
 	{
-
-
 		PluginHelper helper;
 		Label statusLabel;
 		SkillReplayControlViewModel vm;
 
 		public void Log(string str)
 		{
-			if (vm!=null)
+			if( vm != null )
 			{
 				vm.Log(str);
 			}
@@ -39,7 +40,8 @@ namespace SkillReplay
 			SetPluginForm(pluginScreenSpace);
 
 			helper = new PluginHelper(vm);
-			helper.Init(()=>{
+			helper.Init(() =>
+			{
 				ActGlobals.oFormActMain.ValidateLists();
 				ActGlobals.oFormActMain.OnLogLineRead += new LogLineEventDelegate(OnLogLineRead);
 				statusLabel.Text += "Plugin Inited.";
@@ -69,15 +71,15 @@ namespace SkillReplay
 
 		private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
 		{
-			if (!isImport && vm.IsReady)
+			if( !isImport && vm.IsReady )
 			{
 				var line = logInfo.logLine.Substring(15);
-				var sep = line.Split(new char[]{':'});
-				if (sep[0] == "15")
+				var sep = line.Split(new char[] { ':' });
+				if( sep[0] == "15" )
 				{
 					var player = helper.GetPlayer();
-					var id = player.ID.ToString("X").PadLeft(8,'0');
-					if(sep[1] == id)
+					var id = player.ID.ToString("X").PadLeft(8, '0');
+					if( sep[1] == id )
 					{
 						vm.CheckStart(sep[3]);
 					}

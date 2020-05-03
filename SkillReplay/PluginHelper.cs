@@ -46,7 +46,7 @@ namespace ACT_Plugin
 			this.log = log;
 		}
 
-		public async void Init(Action cb=null)
+		public async void Init(Action cb = null)
 		{
 			log.Log("check ffxiv plugin");
 			dynamic plugin = null;
@@ -54,7 +54,7 @@ namespace ACT_Plugin
 			{
 				await Task.Delay(5000);
 				plugin = GetFFXIVPlugin();
-			} while (plugin == null);
+			} while( plugin == null );
 			IsInit = true;
 			log.Log("ffxiv plugin ok : " + GetPlayerName());
 			cb?.Invoke();
@@ -85,13 +85,13 @@ namespace ACT_Plugin
 		private void UpdateCombatants()
 		{
 			var dt = DateTime.Now - CombatantsUpdateTime;
-			if (dt.TotalMilliseconds > 1000)
+			if( dt.TotalMilliseconds > 1000 )
 			{
 				LastCombatants.Clear();
 				dynamic plugin = GetFFXIVPlugin();
 				dynamic rep = plugin.DataRepository;
 				IEnumerable<dynamic> list = rep.GetCombatantList() as IEnumerable<dynamic>;
-				foreach (var c in list)
+				foreach( var c in list )
 				{
 					LastCombatants.Add(new Combatant(c));
 				}
@@ -105,7 +105,8 @@ namespace ACT_Plugin
 
 		public string GetPlayerName()
 		{
-			if(Combatants.Count > 0) { 
+			if( Combatants.Count > 0 )
+			{
 				return Combatants.First().Name;
 			}
 			return null;

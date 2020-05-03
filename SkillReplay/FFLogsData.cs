@@ -188,7 +188,7 @@ namespace SkillReplay
 		public void SetItem(string key, T val)
 		{
 			var data = cache.Find(d => d.key == key);
-			if (data != null)
+			if( data != null )
 			{
 				data.obj = val;
 				cache.Remove(data);
@@ -198,7 +198,7 @@ namespace SkillReplay
 			{
 				data = new Data { key = key, obj = val };
 				cache.Add(data);
-				if (cache.Count > limit)
+				if( cache.Count > limit )
 				{
 					cache.RemoveAt(0);
 				}
@@ -225,16 +225,14 @@ namespace SkillReplay
 			var request = new HttpRequestMessage(HttpMethod.Get, url);
 			request.Headers.Add("ContentType", "application/json");
 			request.Headers.Add("Accept-Language", "ja");
-			request.Headers.Add("Accept-Language", "ja");
 
-			//log.Log("download : " + url);
 			HttpClient httpClient = new HttpClient();
 			var res = httpClient.SendAsync(request);
 			var html = await res.Result.Content.ReadAsStringAsync();
 			return html;
 		}
 
-		private const string URL_BASE = "https://ja.fflogs.com/reports";
+		private const string URL_BASE = "https://www.fflogs.com/reports";
 
 		private string FightsAndParticipantsUrl()
 		{
@@ -261,15 +259,15 @@ namespace SkillReplay
 			Clear();
 			try
 			{
-				if (!uri.AbsoluteUri.StartsWith( $"{URL_BASE}/fights-and-participants/"))
+				if( !uri.AbsolutePath.StartsWith("/reports/fights-and-participants/") )
 				{
-					if (uri.Segments.Length != 3)
+					if( uri.Segments.Length != 3 )
 					{
 						return false;
 					}
 					id = uri.Segments[2];
 				}
-				else if (uri.AbsoluteUri.StartsWith( $"{URL_BASE}/fights-and-participants/"))
+				else if( uri.AbsolutePath.StartsWith("/reports/fights-and-participants/") )
 				{
 					id = uri.Segments[3];
 				}
@@ -277,15 +275,15 @@ namespace SkillReplay
 				string sfight = null;
 
 				var m = Regex.Match(uri.AbsoluteUri, "#fight=(\\d+|last)");
-				if (m.Success)
+				if( m.Success )
 				{
 					sfight = m.Groups[1].Value;
 				}
 
-				if (id != null)
+				if( id != null )
 				{
 					var url = FightsAndParticipantsUrl();
-					if (cache.Has(url))
+					if( cache.Has(url) )
 					{
 						fights = cache.GetItem(url);
 						log.Log("fights from cache");
@@ -297,20 +295,21 @@ namespace SkillReplay
 						var serializer = new DataContractJsonSerializer(typeof(FightsAndFiends));
 						var ms = new MemoryStream(Encoding.UTF8.GetBytes(html));
 						fights = serializer.ReadObject(ms) as FightsAndFiends;
-						cache.SetItem(url,fights);
+						cache.SetItem(url, fights);
 						log.Log("download ok");
 					}
 					fight_id = 0;
-					if (sfight!=null && fights != null && fights.fights != null && fights.fights.Count>0)
+					if( sfight != null && fights != null && fights.fights != null && fights.fights.Count > 0 )
 					{
-						if (sfight == "last"){
+						if( sfight == "last" )
+						{
 							fight_id = fights.fights.Last().id;
 						}
-						else if(int.TryParse(sfight, out fight_id))
+						else if( int.TryParse(sfight, out fight_id) )
 						{
-							if(!fights.fights.Exists(f => f.id == fight_id))
+							if( !fights.fights.Exists(f => f.id == fight_id) )
 							{
-								fight_id=0;
+								fight_id = 0;
 							}
 						}
 					}
@@ -318,7 +317,7 @@ namespace SkillReplay
 
 				return true;
 			}
-			catch (Exception)
+			catch( Exception )
 			{
 				return false;
 			}
@@ -327,21 +326,21 @@ namespace SkillReplay
 		public async Task<SummaryEvents> GetEvents(Fight fight, Friendly friend)
 		{
 			SummaryEvents evts = null;
-			if (id == null || this.fights == null || !this.fights.friendlies.Contains(friend))
+			if( id == null || this.fights == null || !this.fights.friendlies.Contains(friend) )
 			{
 				return null;
 			}
 
 			try
 			{
-				if (fight.events == null)
+				if( fight.events == null )
 				{
 					fight.events = new Dictionary<Friendly, SummaryEvents>();
 				}
 				fight.events.TryGetValue(friend, out evts);
 
 				log.Log("skill download");
-				while (evts == null || (evts.nextPageTimestamp - fight.start_time) < 3 * 60 * 1000)
+				while( evts == null || (evts.nextPageTimestamp - fight.start_time) < 3 * 60 * 1000 )
 				{
 					log.Log("downloading ...");
 					var url = EventsUrl(fight, friend, evts);
@@ -349,10 +348,10 @@ namespace SkillReplay
 					var serializer = new DataContractJsonSerializer(typeof(SummaryEvents));
 					var ms = new MemoryStream(Encoding.UTF8.GetBytes(html));
 					SummaryEvents ev = serializer.ReadObject(ms) as SummaryEvents;
-					if (ev.events.Count == 0) break;
+					if( ev.events.Count == 0 ) break;
 					ev.events = ev.events.Where(e => e.sourceID == friend.id && e.type == "cast" && e.ability.guid > 8).ToList();
 
-					if (evts != null)
+					if( evts != null )
 					{
 						evts.concat(ev);
 					}
@@ -366,7 +365,7 @@ namespace SkillReplay
 				log.Log("download ok");
 				return evts;
 			}
-			catch (Exception)
+			catch( Exception )
 			{
 				return null;
 			}
